@@ -44,19 +44,68 @@
 
   <div class="player-pool">
     <h3>Player Pool</h3>
-    <div>Salah FWD ₦12,000 <button>Add</button></div>
-    <div>Haaland FWD ₦11,500 <button>Add</button></div>
-    <div>De Bruyne MID ₦10,500 <button>Add</button></div>
-    <div>Kante MID ₦9,000 <button>Add</button></div>
-    <div>Alexander-Arnold DEF ₦8,500 <button>Add</button></div>
-    <div>Dias DEF ₦8,000 <button>Add</button></div>
-    <div>Ederson GK ₦9,500 <button>Add</button></div>
-    <div>FlexPlayer1 MID ₦9,000 <button>Add</button></div>
-  </div>
+    <div>Salah FWD ₦12,000 <button onclick="addPlayer('Salah', 'FWD', 12000)">Add</button></div>
+    <div>Haaland FWD ₦11,500 <button onclick="addPlayer('Haaland', 'FWD', 11500)">Add</button></div>
+    <div>De Bruyne MID ₦10,500 <button onclick="addPlayer('De Bruyne', 'MID', 10500)">Add</button></div>
+    <div>Kante MID ₦9,000 <button onclick="addPlayer('Kante', 'MID', 9000)">Add</button></div>
+    <div>Alexander-Arnold DEF ₦8,500 <button onclick="addPlayer('Alexander-Arnold', 'DEF', 8500)">Add</button></div>
+    <div>Dias DEF ₦8,000 <button onclick="addPlayer('Dias', 'DEF', 8000)">Add</button></div>
+    <div>Ederson GK ₦9,500 <button onclick="addPlayer('Ederson', 'GK', 9500)">Add</button></div>
+    <div>FlexPlayer1 MID ₦9,000 <button onclick="addPlayer('FlexPlayer1', 'MID', 9000)">Add</button></div>
+    </div>
 
   <button class="disabled">Submit Lineup</button>
 
 </div>
 
-</body>
+</body> 
+  <script>
+  let remainingSalary = 50000;
+  let lineup = {
+    GK: [],
+    DEF: [],
+    MID: [],
+    FWD: [],
+    FLEX: []
+  };
+
+  function updateSalary() {
+    document.querySelector('.salary').innerText = `Remaining Salary: ₦${remainingSalary}`;
+  }
+
+  function addPlayer(name, position, salary) {
+    if (remainingSalary < salary) {
+      alert("Not enough salary!");
+      return;
+    }
+
+    // Determine where to place the player
+    let slot = null;
+    if (position === "GK" && lineup.GK.length < 1) slot = lineup.GK;
+    else if (position === "DEF" && lineup.DEF.length < 2) slot = lineup.DEF;
+    else if (position === "MID" && lineup.MID.length < 2) slot = lineup.MID;
+    else if (position === "FWD" && lineup.FWD.length < 2) slot = lineup.FWD;
+    else if ((position === "DEF" || position === "MID" || position === "FWD") && lineup.FLEX.length < 1) slot = lineup.FLEX;
+    else {
+      alert("No slot available for this position!");
+      return;
+    }
+
+    slot.push(name);
+    remainingSalary -= salary;
+    updateSalary();
+    alert(`${name} added to lineup!`);
+    checkSubmitReady();
+  }
+
+  function checkSubmitReady() {
+    let totalSlots = lineup.GK.length + lineup.DEF.length + lineup.MID.length + lineup.FWD.length + lineup.FLEX.length;
+    let submitButton = document.querySelector('button.disabled');
+    if (totalSlots === 8) {
+      submitButton.classList.remove('disabled');
+      submitButton.disabled = false;
+    }
+  }
+</script>
+
 </html>
