@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NaijaDraft Lineup Builder</title>
+  <style>
+    body { font-family: Arial; margin: 0; padding: 0; background: #f5f5f5; }
+    header { background: #0b3d2e; color: #fff; padding: 15px; display: flex; justify-content: space-between; }
+    header a { color: #fff; margin-left: 15px; text-decoration: none; }
+    .container { padding: 20px; }
+    .salary { margin-bottom: 20px; font-weight: bold; }
+    .lineup, .player-pool { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+    .lineup div, .player-pool div { margin: 5px 0; }
+    button { padding: 5px 10px; margin-left: 10px; }
+    .disabled { opacity: 0.5; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>NaijaDraft</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Contests</a>
+    <a href="#">Leaderboard</a>
+    <a href="#">Wallet</a>
+    <a href="#">Login</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div class="salary">Remaining Salary: ₦50,000</div>
+
+  <div class="lineup">
+    <h3>Your Lineup</h3>
+    <div>GK: [empty]</div>
+    <div>DEF: [empty] [empty]</div>
+    <div>MID: [empty] [empty]</div>
+    <div>FWD: [empty] [empty]</div>
+    <div>FLEX: [empty]</div>
+  </div>
+
+  <div class="player-pool">
+    <h3>Player Pool</h3>
+    <div>Salah FWD ₦12,000 <button>Add</button></div>
+    <div>Haaland FWD ₦11,500 <button>Add</button></div>
+    <div>De Bruyne MID ₦10,500 <button>Add</button></div>
+    <div>Kante MID ₦9,000 <button>Add</button></div>
+    <div>Alexander-Arnold DEF ₦8,500 <button>Add</button></div>
+    <div>Dias DEF ₦8,000 <button>Add</button></div>
+    <div>Ederson GK ₦9,500 <button>Add</button></div>
+    <div>FlexPlayer1 MID ₦9,000 <button>Add</button></div>
+  </div>
+
+  <button class="disabled">Submit Lineup</button>
+
+</div>
+
+</body>
+</html>
