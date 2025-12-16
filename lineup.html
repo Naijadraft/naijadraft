@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NaijaDraft Lineup Builder</title>
   <style>
-    body { font-family: Arial; margin: 0; padding: 0; background: #f5f5f5; }
-    header { background: #0b3d2e; color: #fff; padding: 15px; display: flex; justify-content: space-between; }
-    header a { color: #fff; margin-left: 15px; text-decoration: none; }
-    .container { padding: 20px; }
-    .salary, .total-points { margin-bottom: 20px; font-weight: bold; }
-    .lineup, .player-pool { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
-    .lineup div, .player-pool div { margin: 5px 0; }
-    button { padding: 5px 10px; margin-left: 10px; }
-    .disabled { opacity: 0.5; pointer-events: none; }
+    body { font-family: Arial; margin:0; padding:0; background:#f5f5f5; }
+    header { background:#0b3d2e; color:#fff; padding:15px; display:flex; justify-content:space-between; }
+    header a { color:#fff; margin-left:15px; text-decoration:none; }
+    .container { padding:20px; }
+    .salary, .total-points { margin-bottom:20px; font-weight:bold; }
+    .lineup, .player-pool { background:#fff; padding:15px; margin-bottom:20px; border-radius:8px; }
+    .lineup div, .player-pool div { margin:5px 0; }
+    button { padding:5px 10px; margin-left:10px; }
+    .disabled { opacity:0.5; pointer-events:none; }
   </style>
 </head>
 <body>
@@ -45,14 +45,14 @@
 
   <div class="player-pool">
     <h3>Player Pool</h3>
-    <div>Salah FWD ₦12,000 <button onclick="addPlayer('Salah', 'FWD', 12000)">Add</button></div>
-    <div>Haaland FWD ₦11,500 <button onclick="addPlayer('Haaland', 'FWD', 11500)">Add</button></div>
-    <div>De Bruyne MID ₦10,500 <button onclick="addPlayer('De Bruyne', 'MID', 10500)">Add</button></div>
-    <div>Kante MID ₦9,000 <button onclick="addPlayer('Kante', 'MID', 9000)">Add</button></div>
-    <div>Alexander-Arnold DEF ₦8,500 <button onclick="addPlayer('Alexander-Arnold', 'DEF', 8500)">Add</button></div>
-    <div>Dias DEF ₦8,000 <button onclick="addPlayer('Dias', 'DEF', 8000)">Add</button></div>
-    <div>Ederson GK ₦9,500 <button onclick="addPlayer('Ederson', 'GK', 9500)">Add</button></div>
-    <div>FlexPlayer1 MID ₦9,000 <button onclick="addPlayer('FlexPlayer1', 'MID', 9000)">Add</button></div>
+    <div>Salah FWD ₦12,000 <button onclick="addPlayer('Salah','FWD',12000)">Add</button></div>
+    <div>Haaland FWD ₦11,500 <button onclick="addPlayer('Haaland','FWD',11500)">Add</button></div>
+    <div>De Bruyne MID ₦10,500 <button onclick="addPlayer('De Bruyne','MID',10500)">Add</button></div>
+    <div>Kante MID ₦9,000 <button onclick="addPlayer('Kante','MID',9000)">Add</button></div>
+    <div>Alexander-Arnold DEF ₦8,500 <button onclick="addPlayer('Alexander-Arnold','DEF',8500)">Add</button></div>
+    <div>Dias DEF ₦8,000 <button onclick="addPlayer('Dias','DEF',8000)">Add</button></div>
+    <div>Ederson GK ₦9,500 <button onclick="addPlayer('Ederson','GK',9500)">Add</button></div>
+    <div>FlexPlayer1 MID ₦9,000 <button onclick="addPlayer('FlexPlayer1','MID',9000)">Add</button></div>
   </div>
 
   <button class="disabled" disabled>Submit Lineup</button>
@@ -61,130 +61,87 @@
 
 <script>
   let remainingSalary = 50000;
-  let lineup = {
-    GK: [],
-    DEF: [],
-    MID: [],
-    FWD: [],
-    FLEX: []
+  let lineup = { GK: [], DEF: [], MID: [], FWD: [], FLEX: [] };
+
+  // DraftKings-style scoring (Goal = 10 points)
+  let playerStats = {
+    "Salah": {goal:1, assist:0, yellow:0, red:0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0},
+    "Haaland": {goal:2, assist:1, yellow:0, red:0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0},
+    "De Bruyne": {goal:0, assist:2, yellow:1, red:0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
+    "Kante": {goal:0, assist:1, yellow:0, red:0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
+    "Alexander-Arnold": {goal:0, assist:1, yellow:0, red:0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
+    "Dias": {goal:0, assist:0, yellow:1, red:0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:2},
+    "Ederson": {goal:0, assist:0, yellow:0, red:0, ownGoal:0, penaltyMiss:0, penaltySave:1, cleanSheet:true, saves:3, goalsConceded:0},
+    "FlexPlayer1": {goal:1, assist:0, yellow:0, red:0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0}
   };
 
-  // DraftKings scoring with Goal = 10 points
-  let playerStats = {
-    "Salah": {goal: 1, assist: 0, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0},
-    "Haaland": {goal: 2, assist: 1, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0},
-    "De Bruyne": {goal: 0, assist: 2, yellow: 1, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
-    "Kante": {goal: 0, assist: 1, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
-    "Alexander-Arnold": {goal: 0, assist: 1, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
-    "Dias": {goal: 0, assist: 0, yellow: 1, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:2},
-    "Ederson": {goal: 0, assist: 0, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:1, cleanSheet:true, saves:3, goalsConceded:0},
-    "FlexPlayer1": {goal: 1, assist: 0, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0}
-  };
+  function calculateScore(playerName, position) {
+    let stats = playerStats[playerName];
+    if (!stats) return 0;
+    let points = 0;
+    points += (stats.goal||0)*10;       // Goal
+    points += (stats.assist||0)*5;      // Assist
+
+    if ((position==="GK"||position==="DEF") && stats.cleanSheet) points += 8;
+    if (position==="MID" && stats.cleanSheet) points += 4;
+
+    if (position==="GK" && stats.saves) points += stats.saves*1;
+
+    points += (stats.yellow||0)*-2;
+    points += (stats.red||0)*-5;
+    points += (stats.ownGoal||0)*-5;
+    points += (stats.penaltyMiss||0)*-5;
+    if (position==="GK") points += (stats.penaltySave||0)*8;
+
+    if ((position==="GK"||position==="DEF") && stats.goalsConceded)
+      points -= Math.floor(stats.goalsConceded/2)*2;
+
+    return points;
+  }
 
   function updateSalary() {
     document.querySelector('.salary').innerText = `Remaining Salary: ₦${remainingSalary}`;
   }
 
-  function calculateScore(playerName, position) {
-    let stats = playerStats[playerName];
-    if (!stats) return 0;
-
-    let points = 0;
-    points += (stats.goal || 0) * 10; // Goal
-    points += (stats.assist || 0) * 5; // Assist
-
-    if ((position === "GK" || position === "DEF") && stats.cleanSheet) points += 8;
-    if (position === "MID" && stats.cleanSheet) points += 4;
-
-    if (position === "GK" && stats.saves) points += stats.saves * 1;
-
-    points += (stats.yellow || 0) * -2;
-    points += (stats.red || 0) * -5;
-    points += (stats.ownGoal || 0) * -5;
-    points += (stats.penaltyMiss || 0) * -5;
-
-    if (position === "GK") points += (stats.penaltySave || 0) * 8;
-
-    if ((position === "GK" || position === "DEF") && stats.goalsConceded) {
-      points -= Math.floor(stats.goalsConceded / 2) * 2;
-    }
-
-    return points;
-  }
-
   function updateTotalPoints() {
-    let total = 0;
-    for (let position in lineup) {
-      lineup[position].forEach(player => {
-        total += calculateScore(player.name, position);
-      });
-    }
+    let total=0;
+    for(let pos in lineup) lineup[pos].forEach(p=>total+=calculateScore(p.name,pos));
     document.querySelector('.total-points').innerText = `Total Points: ${total}`;
   }
 
   function renderLineup() {
-    for (let position in lineup) {
-      let container = document.getElementById(`lineup-${position}`);
-      if (!container) continue;
-
-      if (lineup[position].length === 0) {
-        container.innerHTML = `${position}: [empty]`;
-      } else {
-        container.innerHTML = lineup[position].map(player => 
-          `${player.name} <button onclick="removePlayer('${position}','${player.name}',${player.salary})">Remove</button>`
-        ).join(' ');
-      }
+    for(let pos in lineup){
+      let container=document.getElementById(`lineup-${pos}`);
+      if(!container) continue;
+      if(lineup[pos].length===0) container.innerHTML=`${pos}: [empty]`;
+      else container.innerHTML=lineup[pos].map(p=>`${p.name} <button onclick="removePlayer('${pos}','${p.name}',${p.salary})">Remove</button>`).join(' ');
     }
   }
 
-  function addPlayer(name, position, salary) {
-    if (remainingSalary < salary) {
-      alert("Not enough salary!");
-      return;
-    }
-
-    let slot = null;
-    if (position === "GK" && lineup.GK.length < 1) slot = lineup.GK;
-    else if (position === "DEF" && lineup.DEF.length < 2) slot = lineup.DEF;
-    else if (position === "MID" && lineup.MID.length < 2) slot = lineup.MID;
-    else if (position === "FWD" && lineup.FWD.length < 2) slot = lineup.FWD;
-    else if ((position === "DEF" || position === "MID" || position === "FWD") && lineup.FLEX.length < 1) slot = lineup.FLEX;
-    else {
-      alert("No slot available for this position!");
-      return;
-    }
-
-    slot.push({name, salary});
-    remainingSalary -= salary;
-    updateSalary();
-    renderLineup();
-    updateTotalPoints();
-    checkSubmitReady();
+  function addPlayer(name,pos,salary){
+    if(remainingSalary<salary){alert("Not enough salary!");return;}
+    let slot=null;
+    if(pos==="GK" && lineup.GK.length<1) slot=lineup.GK;
+    else if(pos==="DEF" && lineup.DEF.length<2) slot=lineup.DEF;
+    else if(pos==="MID" && lineup.MID.length<2) slot=lineup.MID;
+    else if(pos==="FWD" && lineup.FWD.length<2) slot=lineup.FWD;
+    else if((pos==="DEF"||pos==="MID"||pos==="FWD") && lineup.FLEX.length<1) slot=lineup.FLEX;
+    else {alert("No slot available for this position!"); return;}
+    slot.push({name,salary});
+    remainingSalary-=salary;
+    updateSalary(); renderLineup(); updateTotalPoints(); checkSubmitReady();
   }
 
-  function removePlayer(position, name, salary) {
-    let slot = lineup[position];
-    let index = slot.findIndex(player => player.name === name);
-    if (index !== -1) {
-      slot.splice(index, 1);
-      remainingSalary += salary;
-      updateSalary();
-      renderLineup();
-      updateTotalPoints();
-      checkSubmitReady();
-    }
+  function removePlayer(pos,name,salary){
+    let slot=lineup[pos]; let index=slot.findIndex(p=>p.name===name);
+    if(index!==-1){slot.splice(index,1); remainingSalary+=salary; updateSalary(); renderLineup(); updateTotalPoints(); checkSubmitReady();}
   }
 
-  function checkSubmitReady() {
-    let totalSlots = lineup.GK.length + lineup.DEF.length + lineup.MID.length + lineup.FWD.length + lineup.FLEX.length;
-    let submitButton = document.querySelector('button.disabled');
-    if (totalSlots === 8) {
-      submitButton.classList.remove('disabled');
-      submitButton.disabled = false;
-    } else {
-      submitButton.classList.add('disabled');
-      submitButton.disabled = true;
-    }
+  function checkSubmitReady(){
+    let totalSlots=lineup.GK.length+lineup.DEF.length+lineup.MID.length+lineup.FWD.length+lineup.FLEX.length;
+    let btn=document.querySelector('button.disabled');
+    if(totalSlots===8){btn.classList.remove('disabled'); btn.disabled=false;}
+    else {btn.classList.add('disabled'); btn.disabled=true;}
   }
 
   renderLineup();
