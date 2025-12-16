@@ -9,7 +9,7 @@
     header { background: #0b3d2e; color: #fff; padding: 15px; display: flex; justify-content: space-between; }
     header a { color: #fff; margin-left: 15px; text-decoration: none; }
     .container { padding: 20px; }
-    .salary { margin-bottom: 20px; font-weight: bold; }
+    .salary, .total-points { margin-bottom: 20px; font-weight: bold; }
     .lineup, .player-pool { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
     .lineup div, .player-pool div { margin: 5px 0; }
     button { padding: 5px 10px; margin-left: 10px; }
@@ -32,6 +32,7 @@
 <div class="container">
 
   <div class="salary">Remaining Salary: ₦50,000</div>
+  <div class="total-points">Total Points: 0</div>
 
   <div class="lineup">
     <h3>Your Lineup</h3>
@@ -68,8 +69,57 @@
     FLEX: []
   };
 
+  // DraftKings scoring with Goal = 10 points
+  let playerStats = {
+    "Salah": {goal: 1, assist: 0, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0},
+    "Haaland": {goal: 2, assist: 1, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0},
+    "De Bruyne": {goal: 0, assist: 2, yellow: 1, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
+    "Kante": {goal: 0, assist: 1, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
+    "Alexander-Arnold": {goal: 0, assist: 1, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:true, saves:0, goalsConceded:0},
+    "Dias": {goal: 0, assist: 0, yellow: 1, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:2},
+    "Ederson": {goal: 0, assist: 0, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:1, cleanSheet:true, saves:3, goalsConceded:0},
+    "FlexPlayer1": {goal: 1, assist: 0, yellow: 0, red: 0, ownGoal:0, penaltyMiss:0, penaltySave:0, cleanSheet:false, saves:0, goalsConceded:0}
+  };
+
   function updateSalary() {
     document.querySelector('.salary').innerText = `Remaining Salary: ₦${remainingSalary}`;
+  }
+
+  function calculateScore(playerName, position) {
+    let stats = playerStats[playerName];
+    if (!stats) return 0;
+
+    let points = 0;
+    points += (stats.goal || 0) * 10; // Goal
+    points += (stats.assist || 0) * 5; // Assist
+
+    if ((position === "GK" || position === "DEF") && stats.cleanSheet) points += 8;
+    if (position === "MID" && stats.cleanSheet) points += 4;
+
+    if (position === "GK" && stats.saves) points += stats.saves * 1;
+
+    points += (stats.yellow || 0) * -2;
+    points += (stats.red || 0) * -5;
+    points += (stats.ownGoal || 0) * -5;
+    points += (stats.penaltyMiss || 0) * -5;
+
+    if (position === "GK") points += (stats.penaltySave || 0) * 8;
+
+    if ((position === "GK" || position === "DEF") && stats.goalsConceded) {
+      points -= Math.floor(stats.goalsConceded / 2) * 2;
+    }
+
+    return points;
+  }
+
+  function updateTotalPoints() {
+    let total = 0;
+    for (let position in lineup) {
+      lineup[position].forEach(player => {
+        total += calculateScore(player.name, position);
+      });
+    }
+    document.querySelector('.total-points').innerText = `Total Points: ${total}`;
   }
 
   function renderLineup() {
@@ -108,6 +158,7 @@
     remainingSalary -= salary;
     updateSalary();
     renderLineup();
+    updateTotalPoints();
     checkSubmitReady();
   }
 
@@ -119,6 +170,7 @@
       remainingSalary += salary;
       updateSalary();
       renderLineup();
+      updateTotalPoints();
       checkSubmitReady();
     }
   }
