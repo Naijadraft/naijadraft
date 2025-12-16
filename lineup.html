@@ -35,11 +35,11 @@
 
   <div class="lineup">
     <h3>Your Lineup</h3>
-    <div>GK: [empty]</div>
-    <div>DEF: [empty] [empty]</div>
-    <div>MID: [empty] [empty]</div>
-    <div>FWD: [empty] [empty]</div>
-    <div>FLEX: [empty]</div>
+    <div id="lineup-GK">GK: [empty]</div>
+    <div id="lineup-DEF">DEF: [empty] [empty]</div>
+    <div id="lineup-MID">MID: [empty] [empty]</div>
+    <div id="lineup-FWD">FWD: [empty] [empty]</div>
+    <div id="lineup-FLEX">FLEX: [empty]</div>
   </div>
 
   <div class="player-pool">
@@ -72,6 +72,21 @@
     document.querySelector('.salary').innerText = `Remaining Salary: ₦${remainingSalary}`;
   }
 
+  function renderLineup() {
+    for (let position in lineup) {
+      let container = document.getElementById(`lineup-${position}`);
+      if (!container) continue;
+
+      if (lineup[position].length === 0) {
+        container.innerHTML = `${position}: [empty]`;
+      } else {
+        container.innerHTML = lineup[position].map(player => 
+          `${player.name} <button onclick="removePlayer('${position}','${player.name}',${player.salary})">Remove</button>`
+        ).join(' ');
+      }
+    }
+  }
+
   function addPlayer(name, position, salary) {
     if (remainingSalary < salary) {
       alert("Not enough salary!");
@@ -89,11 +104,23 @@
       return;
     }
 
-    slot.push(name);
+    slot.push({name, salary});
     remainingSalary -= salary;
     updateSalary();
-    alert(`${name} added to lineup!`);
+    renderLineup();
     checkSubmitReady();
+  }
+
+  function removePlayer(position, name, salary) {
+    let slot = lineup[position];
+    let index = slot.findIndex(player => player.name === name);
+    if (index !== -1) {
+      slot.splice(index, 1);
+      remainingSalary += salary;
+      updateSalary();
+      renderLineup();
+      checkSubmitReady();
+    }
   }
 
   function checkSubmitReady() {
@@ -102,8 +129,13 @@
     if (totalSlots === 8) {
       submitButton.classList.remove('disabled');
       submitButton.disabled = false;
+    } else {
+      submitButton.classList.add('disabled');
+      submitButton.disabled = true;
     }
   }
+
+  renderLineup();
 </script>
 
 </body>
