@@ -21,7 +21,7 @@
 <header>
   <div>NaijaDraft</div>
   <nav>
-    <a href="#">Home</a>
+    <a href="index.html">Home</a>
     <a href="#">Contests</a>
     <a href="#">Leaderboard</a>
     <a href="#">Wallet</a>
@@ -52,14 +52,13 @@
     <div>Dias DEF ₦8,000 <button onclick="addPlayer('Dias', 'DEF', 8000)">Add</button></div>
     <div>Ederson GK ₦9,500 <button onclick="addPlayer('Ederson', 'GK', 9500)">Add</button></div>
     <div>FlexPlayer1 MID ₦9,000 <button onclick="addPlayer('FlexPlayer1', 'MID', 9000)">Add</button></div>
-    </div>
+  </div>
 
-  <button class="disabled">Submit Lineup</button>
+  <button class="disabled" disabled>Submit Lineup</button>
 
 </div>
 
-</body> 
-  <script>
+<script>
   let remainingSalary = 50000;
   let lineup = {
     GK: [],
@@ -79,7 +78,6 @@
       return;
     }
 
-    // Determine where to place the player
     let slot = null;
     if (position === "GK" && lineup.GK.length < 1) slot = lineup.GK;
     else if (position === "DEF" && lineup.DEF.length < 2) slot = lineup.DEF;
@@ -108,4 +106,5 @@
   }
 </script>
 
+</body>
 </html>
